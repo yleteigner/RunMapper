@@ -98,25 +98,27 @@ public class MainActivity extends Activity {
                         fitFileList = new ArrayList<FitFile>();
 
                         if (downloadSelection == 0) {// download all
-                            if (watchPcc.requestDownloadAllActivities(deviceInfoArray[pos].getDeviceUUID(),
+                            if (watchPcc.requestDownloadAllActivities(
+                                    deviceInfoArray[pos].getDeviceUUID(),
                                     new DownloadActivitiesFinished(pos),
                                     new FileDownloadedReceiver(),
                                     new AntFsUpdateReceiver())) {
                                 antFsProgressDialog.show();
                             }
                         } else if (downloadSelection == 1) {// download new
-                            if (watchPcc.requestDownloadNewActivities(deviceInfoArray[pos].getDeviceUUID(),
+                            if (watchPcc.requestDownloadNewActivities(
+                                    deviceInfoArray[pos].getDeviceUUID(),
                                     new DownloadActivitiesFinished(pos),
                                     new FileDownloadedReceiver(),
                                     new AntFsUpdateReceiver())) {
                                 antFsProgressDialog.show();
                             }
-                        } else if (downloadSelection == 2) {
-                            boolean reqSubmitted = watchPcc.listenForNewActivities(deviceInfoArray[pos].getDeviceUUID(),
+                        } else if (downloadSelection == 2) {  // Wait for new activities
+                            boolean reqSubmitted = watchPcc.listenForNewActivities(
+                                    deviceInfoArray[pos].getDeviceUUID(),
                                     new AntPlusWatchDownloaderPcc.IDownloadActivitiesFinishedReceiver() {
                                         @Override
-                                        public void onNewDownloadActivitiesFinished(
-                                                AntFsRequestStatus status) {
+                                        public void onNewDownloadActivitiesFinished(AntFsRequestStatus status) {
                                             //Only received on cancel right now, only thing to do is cancel dialog, already taken care of below
                                         }
                                     },
@@ -381,7 +383,6 @@ public class MainActivity extends Activity {
 
     }
 
-
     public class DownloadActivitiesFinished implements AntPlusWatchDownloaderPcc.IDownloadActivitiesFinishedReceiver {
         private final int pos;
 
@@ -445,14 +446,9 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, "FIT file integrity check failed.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             fitFileList.add(downloadedFitFile);
-            // NOTE: This sampler app caches all download data and performs all processing when the file transfer
-            // session has finished.  If dealing with larger files or a large number of files, it
-            // may be better to store the files on the file system instead of just keeping them in memory.
-
             Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
             FileOutputStream outputStream;
             String filename = "fit_file_"+sdf.format(cal.getTime())+".fit";
             try {
@@ -464,7 +460,6 @@ public class MainActivity extends Activity {
             }
         }
     }
-
 
     /**
      * Handles displaying the ANTFS status and progress in the progress dialog.
